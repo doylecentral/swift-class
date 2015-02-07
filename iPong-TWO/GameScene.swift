@@ -8,6 +8,7 @@
 
 import SpriteKit
 
+
 struct PhysicsCategory {
     static let None      : UInt32 = 0
     static let All       : UInt32 = UInt32.max
@@ -17,15 +18,17 @@ struct PhysicsCategory {
 
 class GameScene: SKScene , SKPhysicsContactDelegate{
     
-   var circle = SKShapeNode(circleOfRadius: 40)
+   
+
+
 
     let velocity: CGFloat = 3
     let radius : CGFloat = 40
     
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        
-        
+//       self.physicsBody = SKPhysicsBody(ed: self.frame)
+        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: UIScreen.mainScreen().bounds)
+        self.physicsWorld.gravity = CGVectorMake(0, 0);
         
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Hello, World!";
@@ -34,8 +37,8 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         self.addChild(myLabel)
         
-        physicsWorld.gravity = CGVectorMake(0, 0)
-        physicsWorld.contactDelegate = self
+        //physicsWorld.gravity = CGVectorMake(0, 0)
+        //physicsWorld.contactDelegate = self
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
@@ -67,7 +70,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-        moveBall()
+        //moveBall()
 
     }
     
@@ -83,7 +86,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         // (ball_pos[1] <= BALL_RADIUS) or (ball_pos[1] >= HEIGHT - BALL_RADIUS):
         //#then flip the direction of the y vector
         //ball_vel[1] = -ball_vel[1]
-
+/*
         
         if(circle.position.x >= (width - radius)){
             println("FLIP:")
@@ -91,25 +94,33 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         }else{
             circle.position.x = circle.position.x + velocity //CGPointMake( circle.position.x + velocity , circle.position.y)
         }
-        
+  */
 //
 //        if(circle.position.x <= (width - radius))
 //        {
 //            
 //            circle.position = CGPointMake(circle.position.x + velocity , circle.position.y)
 //        }
-        println("Circle Position: \(circle.position)")
+  //      println("Circle Position: \(circle.position)")
         
     }
     
     func addBall(){
+        var circle = SKShapeNode(circleOfRadius: 40)
+        //var circle = SKSpriteNode(color: UIColor.whiteColor(), size: CGSizeMake(10, 10))
         
         circle.position = CGPointMake(500, 500)
         circle.name = "defaultCircle"
         circle.strokeColor = SKColor.blackColor()
         circle.fillColor = SKColor.whiteColor()
         circle.physicsBody = SKPhysicsBody(circleOfRadius: CGFloat(radius))
-        circle.physicsBody?.dynamic = false //set to false so it doesn't fall off scene.
+        circle.physicsBody?.dynamic = true
+        circle.physicsBody?.friction = 0
+        circle.physicsBody?.linearDamping = 0
+        circle.physicsBody?.restitution = 1.0
+        circle.physicsBody?.allowsRotation = false
+        circle.physicsBody?.applyImpulse(CGVectorMake(10, -10))
+        
         self.addChild(circle)
         
     }
