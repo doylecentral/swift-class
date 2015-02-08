@@ -27,9 +27,17 @@ class GameScene: SKScene{
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
         self.addChild(myLabel)
-        
+                
+        velArray[0] = randomCGFloat()
+        velArray[1] = randomCGFloat()
+
     }
-    
+
+    func randomCGFloat() -> CGFloat {
+        return CGFloat(arc4random_uniform(5)) + 1
+    }
+
+
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
         myLabel.hidden = true
@@ -77,7 +85,7 @@ class GameScene: SKScene{
         circle.position = CGPointMake(500, 500)
         circle.name = "defaultCircle"
         circle.strokeColor = SKColor.blackColor()
-        circle.fillColor = SKColor.whiteColor()
+        circle.fillColor = SKColor.grayColor()
         self.addChild(circle)
         
     }
