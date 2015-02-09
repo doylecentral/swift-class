@@ -10,9 +10,9 @@ import SpriteKit
 
 class GameScene: SKScene{
     
-    var circle = SKShapeNode(circleOfRadius: 40)
+    var circle: SKShapeNode?//(circleOfRadius: 40)
     //TODO: Randomize this
-    var velArray : Array<CGFloat> = [5 , 4]
+    var velArray : [CGFloat] = [5 , 4] //Better generic shortcut than Array<CGFloat>
     let radius : CGFloat = 40
     let width:CGFloat = UIScreen.mainScreen().bounds.size.width
     let height:CGFloat = UIScreen.mainScreen().bounds.size.height
@@ -41,52 +41,38 @@ class GameScene: SKScene{
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         /* Called when a touch begins */
         myLabel.hidden = true
+        //Add this to it's own gesture reconizer nxt refactor
         addBall()
-        
-        //
-        //        for touch: AnyObject in touches {
-        //            let location = touch.locationInNode(self)
-        //
-        //            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-        //
-        //            sprite.xScale = 0.5
-        //            sprite.yScale = 0.5
-        //            sprite.position = location
-        //
-        //            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-        //
-        //            sprite.runAction(SKAction.repeatActionForever(action))
-        //
-        //            self.addChild(sprite)
-        //        }
-        //
-        //        for touch: AnyObject in touches {
-        //            println("Touch?")
-        //        }
         
     }
     
     override func update(currentTime: CFTimeInterval) {
+        
+        if (circle != nil) {
 
-        circle.position.x += velArray[0]
-        circle.position.y += velArray[1]
+            circle?.position.x += velArray[0]
+            circle?.position.y += velArray[1]
         
-        if(circle.position.x >= (width - radius) || circle.position.x <= radius ){
-            velArray[0] = -velArray[0]
-        }
+            if(circle?.position.x >= (width - radius) || circle?.position.x <= radius ){
+                velArray[0] = -velArray[0]
+            }
         
-        if(circle.position.y >= (height - radius) || circle.position.y <= radius ){
-            velArray[1] = -velArray[1]
+            if(circle?.position.y >= (height - radius) || circle?.position.y <= radius ){
+                velArray[1] = -velArray[1]
+            }
         }
     }
     
     
     func addBall(){
-        circle.position = CGPointMake(500, 500)
-        circle.name = "defaultCircle"
-        circle.strokeColor = SKColor.blackColor()
-        circle.fillColor = SKColor.grayColor()
-        self.addChild(circle)
+        if (circle == nil) {
+            circle = SKShapeNode(circleOfRadius: 40)
+            circle?.position = CGPointMake(500, 500)
+            circle?.name = "defaultCircle"
+            circle?.strokeColor = SKColor.blackColor()
+            circle?.fillColor = SKColor.grayColor()
+            self.addChild(circle!)
+        }
         
     }
     }
