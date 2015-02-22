@@ -10,6 +10,10 @@ import SpriteKit
 
 class GameScene: SKScene{
     
+    //Refactor for factory ??
+    var paddle: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
+    var paddle2: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
+    
     var circle: SKShapeNode?//(circleOfRadius: 40)
     //TODO: Randomize this
     var velArray : [CGFloat] = [5 , 4] //Better generic shortcut than Array<CGFloat>
@@ -17,6 +21,46 @@ class GameScene: SKScene{
     let width:CGFloat = UIScreen.mainScreen().bounds.size.width
     let height:CGFloat = UIScreen.mainScreen().bounds.size.height
     let myLabel = SKLabelNode(fontNamed:"Chalkduster")
+    
+
+    
+    func handlePan(sender: UIPanGestureRecognizer ){
+        var sndrView = sender.view
+        
+        println("Moving \(sender.locationInView(sndrView).y)")
+        
+        //Does-ith Crash-ith thy app
+        //println("Location of Das Touch \(sender.locationOfTouch(0, inView: self.view))")
+        println("Velocity \(sender.velocityInView(sndrView))")
+        
+        var move = sender.locationInView(sndrView).y
+        //Fun times
+        var dist : CGFloat = (((height - 150) - (move)))
+        
+        println("Distance: \(dist)")
+        paddle?.position.y = dist
+        
+    }
+
+    
+    func handlePanTop(sender: UIPanGestureRecognizer ){
+        var sndrView = sender.view
+        
+        println("Moving \(sender.locationInView(sndrView).y)")
+        
+        //Does-ith Crash-ith thy app
+        //println("Location of Das Touch \(sender.locationOfTouch(0, inView: self.view))")
+        println("Velocity \(sender.velocityInView(sndrView))")
+        
+        var move = sender.locationInView(sndrView).y
+        //Fun times
+        var dist : CGFloat = (((height - 150) - (move)))
+        
+        println("Distance: \(dist)")
+        paddle2?.position.y = dist
+        
+    }
+
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -42,7 +86,41 @@ class GameScene: SKScene{
         /* Called when a touch begins */
         myLabel.hidden = true
         //Add this to it's own gesture reconizer nxt refactor
+        addPaddle()
         addBall()
+        
+    }
+    
+    
+    func addPaddle(){
+        if (paddle == nil) {
+            
+            var pdview : UIView = UIView (frame: CGRectMake(0, 0, 100, UIScreen.mainScreen().bounds.height))
+            var pdTopview : UIView = UIView (frame: CGRectMake(width - 100, 0, 100, height))
+            
+            
+            pdview.backgroundColor = SKColor.redColor()
+            pdTopview.backgroundColor = SKColor.purpleColor()
+            
+            paddle = SKShapeNode(rect: CGRectMake(101, 10, 10, 300))
+            paddle?.fillColor = SKColor.blueColor()
+            
+            paddle2 = SKShapeNode(rect: CGRectMake(width - 111, 10, 10, 300))
+            paddle2?.fillColor = SKColor.blueColor()
+            
+            var swipeRecognizer = UIPanGestureRecognizer(target: self ,action: "handlePan:")
+            var swipeRecognizer2 = UIPanGestureRecognizer(target: self, action: "handlePanTop:")
+            
+            pdview.addGestureRecognizer(swipeRecognizer)
+            pdTopview.addGestureRecognizer(swipeRecognizer2)
+            
+            self.view?.addSubview(pdview)
+            self.view?.addSubview(pdTopview)
+
+            self.addChild(paddle2!)
+            self.addChild(paddle!)
+        }
+
         
     }
     
@@ -60,6 +138,7 @@ class GameScene: SKScene{
             if(circle?.position.y >= (height - radius) || circle?.position.y <= radius ){
                 velArray[1] = -velArray[1]
             }
+            
         }
     }
     

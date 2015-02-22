@@ -415,6 +415,7 @@
 				67B3FC6B1A845BA800260A5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		67B3FC6C1A845BA800260A5A /* Build configuration list for PBXNativeTarget "iPong-TWOTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +424,7 @@
 				67B3FC6E1A845BA800260A5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
