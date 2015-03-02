@@ -14,18 +14,26 @@ class GameScene: SKScene{
     var paddle: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
     var paddle2: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
     
-    var circle: SKShapeNode?//(circleOfRadius: 40)
+    var leftScore = 0
+    var rightScorce = 0
+    
+    var ball: SKShapeNode?//(circleOfRadius: 40)
     //TODO: Randomize this
-    var velArray : [CGFloat] = [5 , 4] //Better generic shortcut than Array<CGFloat>
+    var velArray : [CGFloat] = [5 , 6] //Better generic shortcut than Array<CGFloat>
     let radius : CGFloat = 40
     let width:CGFloat = UIScreen.mainScreen().bounds.size.width
     let height:CGFloat = UIScreen.mainScreen().bounds.size.height
     let myLabel = SKLabelNode(fontNamed:"Chalkduster")
     
-    //How to refactor this
     var pdTopview : UIView = UIView (frame: CGRectMake(UIScreen.mainScreen().bounds.size.width - 100, 0, 100, UIScreen.mainScreen().bounds.size.height))
+    
     var pdview : UIView = UIView (frame: CGRectMake(0, 0, 100, UIScreen.mainScreen().bounds.height))
     
+    
+    var leftScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(200,
+        (UIScreen.mainScreen().bounds.size.height / 2) - 100, 200, 200))
+    var rightScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(600,
+        (UIScreen.mainScreen().bounds.size.height / 2) - 100, 200, 200))
     
     
     func handlePan(sender: UIPanGestureRecognizer ){
@@ -45,7 +53,7 @@ class GameScene: SKScene{
         println("Velocity \(sender.velocityInView(sndrView))")
         
     }
-
+    
     //Need to refactor this
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -55,23 +63,36 @@ class GameScene: SKScene{
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
         self.addChild(myLabel)
-                
+        
         velArray[0] = randomCGFloat()
         velArray[1] = randomCGFloat()
-
+        
+        //Setup some elments
+        addScoreBoxes()
+        addPaddle()
+        
     }
-
+    
     func randomCGFloat() -> CGFloat {
-        return CGFloat(arc4random_uniform(5)) + 1
+        return CGFloat(arc4random_uniform(9)) + 3
     }
-
+    
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         /* Called when a touch begins */
         myLabel.hidden = true
         //Add this to it's own gesture reconizer nxt refactor
-        addPaddle()
+        
         addBall()
+        
+        
+    }
+    
+    func addScoreBoxes(){
+        leftScoreBox.fillColor = SKColor.yellowColor()
+        self.addChild(leftScoreBox)
+        rightScoreBox.fillColor = SKColor.yellowColor()
+        self.addChild(rightScoreBox)
     }
     
     
@@ -87,34 +108,49 @@ class GameScene: SKScene{
             paddle2 = SKShapeNode(rect: CGRectMake(width - 111, 10, 10, 300))
             paddle2?.fillColor = SKColor.blueColor()
             
-            var swipeRecognizer = UIPanGestureRecognizer(target: self ,action: "handlePan:")
-            var swipeRecognizer2 = UIPanGestureRecognizer(target: self, action: "handlePan:")
+            var panRecognizer = UIPanGestureRecognizer(target: self ,action: "handlePan:")
+            var panRecognizer2 = UIPanGestureRecognizer(target: self, action: "handlePan:")
             
-            pdview.addGestureRecognizer(swipeRecognizer)
-            pdTopview.addGestureRecognizer(swipeRecognizer2)
+            pdview.addGestureRecognizer(panRecognizer)
+            pdTopview.addGestureRecognizer(panRecognizer2)
             
             self.view?.addSubview(pdview)
             self.view?.addSubview(pdTopview)
-
+            
             self.addChild(paddle2!)
             self.addChild(paddle!)
         }
-
+        
         
     }
     
     override func update(currentTime: CFTimeInterval) {
         
-        if (circle != nil) {
-
-            circle?.position.x += velArray[0]
-            circle?.position.y += velArray[1]
         
-            if(circle?.position.x >= (width - radius) || circle?.position.x <= radius ){
+        
+        if (ball != nil) {
+            
+            
+            var bar: CGPoint = CGPointMake(ball!.position.x - radius, ball!.position.y )
+            var foo: CGPoint = CGPointMake(ball!.position.x + radius, ball!.position.y)
+            
+            var hitPaddle = paddle!.containsPoint(bar)
+            var hitPaddle2 = paddle2!.containsPoint(foo)
+            
+            if(hitPaddle || hitPaddle2){
+                velArray[0] = -velArray[0]
+                
+            }
+            
+            
+            ball?.position.x += velArray[0]
+            ball?.position.y += velArray[1]
+            
+            if(ball?.position.x >= (width - radius) || ball?.position.x <= radius ){
                 velArray[0] = -velArray[0]
             }
-        
-            if(circle?.position.y >= (height - radius) || circle?.position.y <= radius ){
+            
+            if(ball?.position.y >= (height - radius) || ball?.position.y <= radius ){
                 velArray[1] = -velArray[1]
             }
             
@@ -123,14 +159,15 @@ class GameScene: SKScene{
     
     
     func addBall(){
-        if (circle == nil) {
-            circle = SKShapeNode(circleOfRadius: 40)
-            circle?.position = CGPointMake(500, 500)
-            circle?.name = "defaultCircle"
-            circle?.strokeColor = SKColor.blackColor()
-            circle?.fillColor = SKColor.grayColor()
-            self.addChild(circle!)
+        if (ball == nil) {
+            ball = SKShapeNode(circleOfRadius: 40)
+            ball?.position = CGPointMake(500, 500)
+            ball?.name = "defaultCircle"
+            ball?.strokeColor = SKColor.blackColor()
+            ball?.fillColor = SKColor.grayColor()
+            ball?.zPosition = 2
+            self.addChild(ball!)
         }
         
     }
-    }
+}
