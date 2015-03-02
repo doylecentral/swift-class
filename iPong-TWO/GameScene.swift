@@ -30,9 +30,10 @@ class GameScene: SKScene{
     var pdview : UIView = UIView (frame: CGRectMake(0, 0, 100, UIScreen.mainScreen().bounds.height))
     
     
-    var leftScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(200, UIScreen.mainScreen().bounds.size.height / 2, 200, 200))
-    var rightScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(600, UIScreen.mainScreen().bounds.size.height / 2, 200, 200))
-    
+    var leftScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(200,
+        (UIScreen.mainScreen().bounds.size.height / 2) - 100, 200, 200))
+    var rightScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(600,
+        (UIScreen.mainScreen().bounds.size.height / 2) - 100, 200, 200))
     
     
     func handlePan(sender: UIPanGestureRecognizer ){
@@ -52,7 +53,7 @@ class GameScene: SKScene{
         println("Velocity \(sender.velocityInView(sndrView))")
         
     }
-
+    
     //Need to refactor this
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -62,43 +63,36 @@ class GameScene: SKScene{
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
         self.addChild(myLabel)
-                
+        
         velArray[0] = randomCGFloat()
         velArray[1] = randomCGFloat()
         
         //Setup some elments
         addScoreBoxes()
         addPaddle()
-
+        
     }
-
+    
     func randomCGFloat() -> CGFloat {
         return CGFloat(arc4random_uniform(9)) + 3
     }
-
+    
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         /* Called when a touch begins */
         myLabel.hidden = true
         //Add this to it's own gesture reconizer nxt refactor
-
+        
         addBall()
         
-
+        
     }
     
     func addScoreBoxes(){
-//        leftScoreBox.backgroundColor = SKColor.yellowColor()
         leftScoreBox.fillColor = SKColor.yellowColor()
-        
         self.addChild(leftScoreBox)
-        //self.view?.sendSubviewToBack(leftScoreBox)
-        
         rightScoreBox.fillColor = SKColor.yellowColor()
-
         self.addChild(rightScoreBox)
-
-        
     }
     
     
@@ -122,11 +116,11 @@ class GameScene: SKScene{
             
             self.view?.addSubview(pdview)
             self.view?.addSubview(pdTopview)
-
+            
             self.addChild(paddle2!)
             self.addChild(paddle!)
         }
-
+        
         
     }
     
@@ -136,26 +130,26 @@ class GameScene: SKScene{
         
         if (ball != nil) {
             
-
+            
             var bar: CGPoint = CGPointMake(ball!.position.x - radius, ball!.position.y )
-             var foo: CGPoint = CGPointMake(ball!.position.x + radius, ball!.position.y)
-
+            var foo: CGPoint = CGPointMake(ball!.position.x + radius, ball!.position.y)
+            
             var hitPaddle = paddle!.containsPoint(bar)
             var hitPaddle2 = paddle2!.containsPoint(foo)
             
             if(hitPaddle || hitPaddle2){
                 velArray[0] = -velArray[0]
-            
+                
             }
             
             
             ball?.position.x += velArray[0]
             ball?.position.y += velArray[1]
-        
+            
             if(ball?.position.x >= (width - radius) || ball?.position.x <= radius ){
                 velArray[0] = -velArray[0]
             }
-        
+            
             if(ball?.position.y >= (height - radius) || ball?.position.y <= radius ){
                 velArray[1] = -velArray[1]
             }
@@ -176,4 +170,4 @@ class GameScene: SKScene{
         }
         
     }
-    }
+}
