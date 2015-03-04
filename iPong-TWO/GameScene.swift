@@ -13,9 +13,9 @@ class GameScene: SKScene{
     //Refactor for factory ??
     var paddle: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
     var paddle2: SKShapeNode? //rect: CGRectMake(10, 10, 10, 10))
-    
-    var leftScore = 0
-    var rightScorce = 0
+
+    var leftScore : Int = 0
+    var rightScore : Int = 0
     
     var ball: SKShapeNode?//(circleOfRadius: 40)
     //TODO: Randomize this
@@ -29,6 +29,8 @@ class GameScene: SKScene{
     
     var pdview : UIView = UIView (frame: CGRectMake(0, 0, 100, UIScreen.mainScreen().bounds.height))
     
+    var leftScoreLabel : SKLabelNode?
+    var rightScoreLabel : SKLabelNode?
     
     var leftScoreBox : SKShapeNode = SKShapeNode(rect:  CGRectMake(200,
         (UIScreen.mainScreen().bounds.size.height / 2) - 100, 200, 200))
@@ -50,7 +52,9 @@ class GameScene: SKScene{
         
         //Does-ith Crash-ith thy app
         //println("Location of Das Touch \(sender.locationOfTouch(0, inView: self.view))")
-        println("Velocity \(sender.velocityInView(sndrView))")
+        
+        //Vel
+        //println("Velocity \(sender.velocityInView(sndrView))")
         
     }
     
@@ -90,8 +94,27 @@ class GameScene: SKScene{
     
     func addScoreBoxes(){
         leftScoreBox.fillColor = SKColor.yellowColor()
+        leftScoreLabel = SKLabelNode(text: leftScore.description)
+        leftScoreLabel?.position = CGPointMake(300, 300)
+        leftScoreLabel?.zPosition = 1
+        leftScoreLabel?.fontColor = SKColor.blackColor()
+        leftScoreLabel?.fontSize = 40
+        leftScoreLabel?.fontName = "Chalkduster"
+
+        leftScoreBox.addChild(leftScoreLabel!)
+        
         self.addChild(leftScoreBox)
+
         rightScoreBox.fillColor = SKColor.yellowColor()
+        rightScoreLabel = SKLabelNode(text: rightScore.description)
+        rightScoreLabel?.position = CGPointMake(700, 300)
+        rightScoreLabel?.zPosition = 1
+        rightScoreLabel?.fontColor = SKColor.blackColor()
+        rightScoreLabel?.fontSize = 40
+        rightScoreLabel?.fontName = "Chalkduster"
+        
+        rightScoreBox.addChild(rightScoreLabel!)
+        
         self.addChild(rightScoreBox)
     }
     
@@ -126,32 +149,42 @@ class GameScene: SKScene{
     
     override func update(currentTime: CFTimeInterval) {
         
-        
-        
         if (ball != nil) {
             
+            var left: CGPoint = CGPointMake(ball!.position.x - radius, ball!.position.y )
+            var right: CGPoint = CGPointMake(ball!.position.x + radius, ball!.position.y)
             
-            var bar: CGPoint = CGPointMake(ball!.position.x - radius, ball!.position.y )
-            var foo: CGPoint = CGPointMake(ball!.position.x + radius, ball!.position.y)
-            
-            var hitPaddle = paddle!.containsPoint(bar)
-            var hitPaddle2 = paddle2!.containsPoint(foo)
+            var hitPaddle = paddle!.containsPoint(left)
+            var hitPaddle2 = paddle2!.containsPoint(right)
             
             if(hitPaddle || hitPaddle2){
                 velArray[0] = -velArray[0]
-                
             }
-            
-            
+
+        
             ball?.position.x += velArray[0]
             ball?.position.y += velArray[1]
             
             if(ball?.position.x >= (width - radius) || ball?.position.x <= radius ){
                 velArray[0] = -velArray[0]
+                
+                if(velArray[0] > 0){
+                    println("Score Right \(velArray[0])")
+                    rightScore++
+                    rightScoreLabel?.text = rightScore.description
+                    //respawn to the left
+                }else{
+                    println("Score Left \(velArray[0])")
+                    leftScore++
+                    leftScoreLabel?.text = leftScore.description
+                    //respawn to the right
+                }
             }
             
             if(ball?.position.y >= (height - radius) || ball?.position.y <= radius ){
                 velArray[1] = -velArray[1]
+                
+                println("Hit Y \(velArray[1])")
             }
             
         }
